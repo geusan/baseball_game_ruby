@@ -1,0 +1,58 @@
+<a type="submit" class="btn btn-small grey darken-4" value="제출하기" href="/">처음으로 가기</a>
+<form action="/try" method="get">
+    <div class="row center">
+        <% if @show_tries.size != 0 && @show_tries[@show_tries.size-1].number.to_s.size == @show_tries[@show_tries.size-1].strike %>
+            <div class="input-field col s12">
+              <input disabled placeholder="끝나버렸다" name="attempt" type="number" id="disabled" class="validate">
+              <label for="first_name">물어볼 숫자</label>
+            </div>
+        <% else %>
+            <div class="input-field col s12">
+              <input placeholder="물어볼 숫자" name="attempt" type="number" class="validate">
+              <label for="first_name">물어볼 숫자</label>
+            </div>
+        <% end %>
+        
+        <div class="input-field col s12">
+          <input placeholder="Placeholder" name="g_num" type="hidden" value="<%= @g_num %>">
+        </div>
+        <% if @show_tries.size != 0 && @show_tries[@show_tries.size-1].number.to_s.size == @show_tries[@show_tries.size-1].strike %>
+            <input type="submit" class="btn btn-large grey darken-4 disabled" value="끝났습니다."></button>
+        <% else %>
+            <input type="submit" class="btn btn-large grey darken-4" value="제출하기"></button>
+        <% end %>
+        
+    </div>
+</form>
+
+<!--# 데이터베이스에 값이 0이면, 처음시도 ( 이때 보여줄 화면 )-->
+    <% if @show_tries.size == 0 %>
+        <h1>어서오세요</h1>
+
+<!--# 값이 있으면 표로 보여주기-->
+    <% else %>
+        <table class="center">
+            <thead>
+                <tr>
+                  <th class="center-align">순번</th>
+                  <th class="center-align">시도한 숫자</th>
+                  <th class="center-align">결과</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @show_tries.each_with_index do |item, index| %>
+                <tr>
+                    <td class="center-align flow-text"><%= index+1 %>번째 시도</td>
+                    <td class="center-align flow-text"><%= item.number %></td>
+                    <% if item.strike == item.number.to_s.size %>
+                    <td class="green-text center-align flow-text">SUCCESS!</td>
+                    <% elsif item.strike != 0 || item.ball != 0 %>
+                    <td class="center-align flow-text"><span><%= item.strike %>S</span><span><%= item.ball %>B</span></td>
+                    <% else %>
+                    <td class="red-text center-align flow-text">OUT!</td>
+                    <% end %>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    <% end %>
